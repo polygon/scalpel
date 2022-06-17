@@ -1,17 +1,23 @@
-{lib, config, pkgs, prev, ...}:
+{lib, config, pkgs, prev, mk_scalpel, ...}:
 let
   start = "${prev.config.systemd.services.mosquitto.serviceConfig.ExecStart}";
-  mosquitto_cfgfile = builtins.head (builtins.match ".*[[:space:]]([^[:space:]]+)$" "${start}");
+  mosquitto_cfgfile = builtins.head (builtins.match ".*-c ([^[:space:]]+)" "${start}");
   decrypted_cfgfile = "/run/mosquitto.cfg";
   secret_file = config.sops.secrets.password.path;
-  replacer = pkgs.writeShellScript ''mosquitto-replacer'' ''
-    PASSWORD=$(cat ${secret_file})
-    sed -e "s/!!PASSWORD!!/''${PASSWORD}/g" ${mosquitto_cfgfile} > ${decrypted_cfgfile}
-    chown mosquitto:mosquitto ${decrypted_cfgfile}
-  '';
+  scalpel = mk_scalpel {
+    matchers = { 
+      "BR1_PASSWORD" = config.sops.secrets.br1passwd.path; 
+      "BR2_PASSWORD" = config.sops.secrets.br2passwd.path;
+    };
+    source = mosquitto_cfgfile;
+    destination = decrypted_cfgfile;
+    user = "mosquitto";
+    group = "mosquitto";
+    mode = "0440";
+  };
 in
 {
-  systemd.services.mosquitto.serviceConfig.ExecStartPre = [ "+${replacer}" ];
+  systemd.services.mosquitto.serviceConfig.ExecStartPre = [ "+${scalpel}" ];
   systemd.services.mosquitto.serviceConfig.ExecStart = lib.mkForce (
     builtins.replaceStrings [ "${mosquitto_cfgfile}" ] [ "${decrypted_cfgfile}"] "${start}"
   );

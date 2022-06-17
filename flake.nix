@@ -6,7 +6,13 @@
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
   in
   {
-    nixosConfigurations.testex = let
+
+    mk_scalpel = {matchers, source, destination, user ? null, group ? null, mode ? null}:
+      pkgs.callPackage ./packages/scalpel.nix {
+        inherit matchers source destination user group mode;
+      };
+      
+    nixosConfigurations.example = let
       sys = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
@@ -17,7 +23,7 @@
     in
     sys.extendModules {
       modules = [ ./example/secrets.nix ];
-      specialArgs = { prev = sys; };
+      specialArgs = { prev = sys; inherit (self) mk_scalpel; };
     };
   };
 }
