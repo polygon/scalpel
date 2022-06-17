@@ -29,6 +29,7 @@
 
   sops.defaultSopsFile = ./secrets/mosquitto.yaml;
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.gnupg.sshKeyPaths = [];
   sops.secrets.br1passwd = {};
   sops.secrets.br2passwd = {};
 

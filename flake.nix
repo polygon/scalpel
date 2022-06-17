@@ -12,7 +12,7 @@
         inherit matchers source destination user group mode;
       };
       
-    nixosConfigurations.example = let
+    nixosConfigurations.example_container = let
       sys = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
