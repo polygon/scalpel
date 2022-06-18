@@ -97,7 +97,7 @@ Also, you will configure your favorite secrets provisioning tool here to ensure 
         self.nixosModules.scalpel
         ./example/secrets.nix 
       ];
-      specialArgs = { prev = base_sys; inherit self; };
+      specialArgs = { prev = base_sys; };
     };
 ```
 

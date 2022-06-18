@@ -29,7 +29,7 @@
           self.nixosModules.scalpel
           ./example/scalpel.nix 
         ];
-        specialArgs = { prev = base_sys; inherit self; };
+        specialArgs = { prev = base_sys; };
       };
 
       exampleContainerManual = base_sys.extendModules {
