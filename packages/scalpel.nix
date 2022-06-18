@@ -1,5 +1,6 @@
 {
   writeShellScript,
+  gnused,
   matchers,
   source,
   destination,
@@ -19,19 +20,15 @@ let
       "s/!!${name}!!/\${MATCHERS[${name}]}/g"
     ) matcher_names
   );
-  chown = if user == null then "" else ''
-    chown ${user} ${destination}
-  '';
-  chgrp = if group == null then "" else ''
-    chgrp ${group} ${destination}
-  '';
-  chmod = if mode == null then "" else ''
-    chmod ${mode} ${destination}
-  '';
+  chown = if user == null then "" else "chown ${user} ${destination}";
+  chgrp = if group == null then "" else "chgrp ${group} ${destination}";
+  chmod = if mode == null then "" else "chmod ${mode} ${destination}";
 in
-  writeShellScript "scalpel" (''
-    declare -A MATCHERS
-  '' + "${loaders}" + ''
-    ;
-    sed -e "${sed_rules}" ${source} > ${destination}
-  '' + chown + chgrp + chmod)
+  writeShellScript "scalpel" (builtins.concatStringsSep "\n" [
+    "declare -A MATCHERS"
+    "${loaders}" 
+    ''${gnused}/bin/sed -e "${sed_rules}" ${source} > ${destination}''
+    chown
+    chgrp
+    chmod
+  ])
