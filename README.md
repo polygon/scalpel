@@ -144,10 +144,10 @@ In this example, we only modified `systemd.services.mosquitto.serviceConfig.Exec
 
 WARNING: THIS CONTAINER USES PUBLICALLY KNOWN PRIVATE KEYS. DO NOT USE THEM IN YOUR DEPLOYMENTS. EVER.
 
-To quickly test the example, you can run it as a NixOS container:
+To quickly test the example, you can run it as a NixOS container after cloning the Flake.
 
 ```
-sudo nixos-container create em --flake github:polygon/scalpel#exampleContainer
+sudo nixos-container create em --flake .#exampleContainer
 sudo nixos-container start em
 sudo machinectl shell em
 ```
