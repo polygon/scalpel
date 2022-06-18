@@ -1,10 +1,11 @@
-{self, config, pkgs, lib, ...}:
+{self}: 
+{config, pkgs, lib, ...}:
 
 with lib;
 
 let
   cfg = config.scalpel;
-
+  
   trafos = builtins.map (trafo:
       let
         matchers = builtins.listToAttrs (builtins.map (matcher:

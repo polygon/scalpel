@@ -12,7 +12,7 @@
         inherit matchers source destination user group mode;
       };
 
-    nixosModules.scalpel = import ./modules/scalpel;
+    nixosModules.scalpel = import ./modules/scalpel { inherit self; };
     nixosModule = self.nixosModules.scalpel;
       
     nixosConfigurations = let
